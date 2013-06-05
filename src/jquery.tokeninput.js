@@ -172,8 +172,7 @@ var methods = {
     destroy: function () {
         if(this.data("tokenInputObject")){
             this.data("tokenInputObject").destroy();
-            this.siblings().remove();
-            this.show();
+            this.removeData("tokenInputObject settings");
         }
         return this;
     }
@@ -379,10 +378,10 @@ $.TokenList = function (input, url_or_data, settings) {
     var hidden_input = $(input)
                            .hide()
                            .val("")
-                           .focus(function () {
+                           .on("focus.tokenInput", function () {
                                focus_with_timeout(input_box);
                            })
-                           .blur(function () {
+                           .on("blur.tokenInput", function () {
                                input_box.blur();
                                //return the object to this can be referenced in the callback functions.
                                return hidden_input;
@@ -519,7 +518,9 @@ $.TokenList = function (input, url_or_data, settings) {
 
     this.destroy = function() {
         this.clear();
+        token_list.remove();
         dropdown.remove();
+        hidden_input.off(".tokenInput").show();
     };
 
     // Resize input to maximum width so the placeholder can be seen
